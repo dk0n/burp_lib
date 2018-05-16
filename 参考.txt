@@ -1,4 +1,0 @@
-https://github.com/elkokc
-
-
-E:/hack/burp_lib/test_vul.py  ¡®http://192.168.0.136:80/test_vul.php?xss=aaa" --data "" --batch --beep --cookie "dasdasda=ccc" --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0" --referer ""¡¯
