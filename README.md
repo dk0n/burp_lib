@@ -53,3 +53,9 @@ burp_vul_plugin 59行
 
 2.导入我的漏洞检测  
 ![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625112300.png)
+
+然后就可以用了:  
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625112900.png)
+
+### 码个代码不容易，大爷大妈赏碗鸡煲翅吧，希望有钱人打赏,万分感谢。
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/img/20190301182006.jpg)
