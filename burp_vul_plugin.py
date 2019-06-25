@@ -8,7 +8,7 @@ from burp import IBurpExtenderCallbacks
 from burp import IContextMenuInvocation
 from burp import IHttpRequestResponse
 from javax.swing import JMenuItem
-import os
+import os,json,subprocess
 
 class BurpExtender(IBurpExtender,  IContextMenuFactory):
     
@@ -36,6 +36,8 @@ class BurpExtender(IBurpExtender,  IContextMenuFactory):
         cookie = ""
         referer = ""
         useragent = ""
+        Accept=""
+        Content_Type=""
         headers = analyzedRequest.getHeaders()
         for header in headers:
             if header.startswith("Cookie: "):
@@ -44,12 +46,22 @@ class BurpExtender(IBurpExtender,  IContextMenuFactory):
                 referer = header.replace("Referer: ","")
             elif header.startswith("User-Agent: "):
                 useragent = header.replace("User-Agent: ","")
+            elif header.startswith("Accept: "):
+                Accept = header.replace("Accept: ","")
+            elif header.startswith("Content-Type: "):
+                Content_Type = header.replace("Content-Type: ","")
+            elif header.startswith("Content-type: "):
+                Content_Type = header.replace("Content-type: ","")
+        method=0
         if analyzedRequest.getMethod() == "POST":
             body = request.getRequest().tostring()[analyzedRequest.getBodyOffset():]
-        test_vul = "E:/hack/burp_lib/test_vul.py"        
-        cmd={"url":str(url),"body":str(body),"cookie":str(cookie),"useragent":str(useragent),"referer":str(referer)}
-        print cmd
-        fo = open("E:/hack/burp_lib/tmp.json", "w")
-        fo.write(str(cmd))
-        fo.close()
-        os.system('start cmd /k '+test_vul)
+            method=1
+        path="E:/hack/burp_lib"
+        test_vul = "%s/test_vul.py"%path        
+        data={"method":method,"Content_Type":str(Content_Type),"url":str(url),"post":str(body),"cookie":str(cookie),"useragent":str(useragent),"referer":str(referer),"Accept":str(Accept)}
+        print data
+        with open('%s/tmp.json'%path, 'w') as json_file:
+            json_file.write(json.dumps(data))
+        #subprocess.call('python3 /Users/guimaizi/hack-tool/burp_lib/test_vul.py')
+        os.system('start cmd /k python %s'%test_vul)
+        #os.system('ping dasda111.zk3qno.ceye.io')

@@ -1,6 +1,55 @@
-# ¼òµ¥±ã½İµÄburp²å¼ş #
-¹¦ÄÜ:ÒòÎªburp Scanner²»ÄÜÉèÖÃ¹¥»÷²ÎÊı£¬ÎÒÕâ¸ö±£´æburp½ØÈ¡µÄhttp/sÇëÇóÊı¾İÎªtmp.jsonÎÄ¼ş(Ä¿Ç°Ö»Ö§³Öget¡¢postÇëÇó)£¬±éÀúhttp/sÇëÇó°ü²ÎÊıÖµ,×·¼ÓÂ©¶´¼ì²â´úÂëÔÚ²ÎÊıÖ®ºó  
-## ½éÉÜ
-burp_vul.py(µ¼Èë½øburpµÄ²å¼ş)  µ¼³öburp½ØÈ¡µÄhttp/sÇëÇóÊı¾İ±£´æÖÁtmp.jsonÎÄ¼ş¡£  
-test_vul(Â©¶´¼ì²âpy)Îª²âÊÔÂ©¶´´úÂë¡£  
-´úÂëÀï¾ø¶ÔÂ·¾¶ĞèÒªĞŞ¸Ä,Çë×ÔĞĞĞŞ¸Ä¡£
+# burpæ¼æ‰«æ’ä»¶
+### ä»‹ç»
+burpåº”è¯¥æ˜¯åœ¨åº§çš„è¯¸ä½å®‰å…¨ä»ä¸šäººå‘˜å¿…ç”¨çš„æµ‹è¯•å·¥å…·,é‡æ”¾http/sè¯·æ±‚åŒ…æ˜¯burpæœ€å¸¸ç”¨çš„åŠŸèƒ½.
+
+xssæ¡ˆä¾‹:
+```
+<?php
+    $domain=$_POST['domain'];
+  if($domain){
+	echo $domain;
+  }else{
+    $html='<form name="input" action="" method="post">
+    domain: <input type="text" name="dasdas">
+    <input type="text" name="domadsa112n">
+    <input type="text" name="domain">
+    <input type="submit" value="Submit">
+    </form>';
+    echo $html;
+  }
+?>
+```
+é‚£ä¹ˆæ¼æ´æµ‹è¯•å°±æ˜¯ä¿®æ”¹httpè¯·æ±‚åŒ…çš„å‚æ•°.å¦‚sqlã€xssã€å‘½ä»¤æ‰§è¡Œæµ‹è¯•,æ— éæ˜¯åœ¨å‚æ•°å€¼åé¢è¿½åŠ payloadï¼Œç„¶åæŸ¥çœ‹å“åº”åŒ…åˆ¤è¯»æ˜¯å¦å­˜åœ¨æ¼æ´,ç„¶è€Œä¸€ä¸ªå‚æ•°ä¸€ä¸ªå‚æ•°çš„æµ‹è¯•çœŸçš„å¾ˆè¾›è‹¦ã€‚  
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625110336.png)
+å¦‚å›¾ï¼Œæ‰‹å·¥æµ‹åˆ°æœ€åä¸€ä¸ªå‚æ•°ï¼Œæ‰å‘ç°xss  
+
+ä¸å¦‚å†™ä¸ªè„šæœ¬éå†å‚æ•°å€¼,è®©ç¨‹åºè‡ªåŠ¨åŠ ä¸Šæ¼æ´æ£€æµ‹payloadå¹¶ä¸”é‡æ”¾ã€‚  
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625110651.png)
+ç‚¹å‡»è§¦å‘æ‰«æã€‚  
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625110807.png)
+
+åˆ¤æ–­å“åº”åŒ…httpå“åº”å¤§å°ä¸è¿”å›å†…å®¹æ˜¯å¦å­˜åœ¨å…³é”®å­—ï¼Œä¾æ¬¡æ¥åˆ¤æ–­æ¼æ´æ˜¯å¦å­˜åœ¨ã€‚  
+
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625111017.png)
+
+è¯·è‡ªè¡Œä¿®æ”¹æ¼æ´æ£€æµ‹ç”¨payload,ä¸åˆ†æå“åº”åŒ…çš„å†…å®¹ã€‚  
+
+
+### ç¯å¢ƒæ­å»º
+
+å‚è€ƒ:Burpsuiteæ’ä»¶çš„ä½¿ç”¨:https://www.freebuf.com/sectool/158005.html
+
+win10/8/7/xp  
+python3.5+  
+>pip install requests
+
+è®¾ç½®ç»å¯¹è·¯å¾„:  
+test_vul.py 25è¡Œ  
+burp_vul_plugin 59è¡Œ  
+
+1.ä¸‹è½½http://www.jython.org/downloads.html   Download Jython 2.7.0 - Standalone Jar ç‰ˆ  
+å¯¼å…¥:  
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625112127.png)
+
+2.å¯¼å…¥æˆ‘çš„æ¼æ´æ£€æµ‹  
+![](https://raw.githubusercontent.com/guimaizi/cloud/test/20190625112300.png)

